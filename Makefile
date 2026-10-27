@@ -3,7 +3,7 @@ DATA_W  ?= 8
 ACCUM_W ?= 32
 
 SIM           ?= verilator
-TOPLEVEL_LANG ?= systemverilog
+TOPLEVEL_LANG ?= verilog
 
 VERILOG_SOURCES  = $(abspath rtl/pe.sv)
 VERILOG_SOURCES += $(abspath rtl/systolic_array.sv)
@@ -16,9 +16,13 @@ COCOTB_HDL_TIMEPRECISION = 1ps
 
 COMPILE_ARGS += -GN=$(N) -GDATA_W=$(DATA_W) -GACCUM_W=$(ACCUM_W)
 COMPILE_ARGS += -Wno-WIDTHEXPAND
+COMPILE_ARGS += --sv
 
 EXTRA_ARGS += --trace-fst
-EXTRA_ARGS += +N=$(N)
+
+SIM_CMD_PREFIX = PYTHONPATH=$(abspath tb)
+
+PLUSARGS += +N=$(N)
 
 SIM_BUILD = sim/build_N$(N)
 
