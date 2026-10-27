@@ -19,6 +19,14 @@ module pe #(
     output logic [ACCUM_W-1:0]    accum
 );
 
+    logic signed [DATA_W-1:0]   a_s;
+    logic signed [DATA_W-1:0]   b_s;
+    logic signed [2*DATA_W-1:0] product;
+
+    assign a_s    = a_in;
+    assign b_s    = b_in;
+    assign product = a_s * b_s;
+
     logic [ACCUM_W-1:0] accum_reg;
     logic stall;
 
@@ -35,7 +43,8 @@ module pe #(
             if (acc_clear) begin
                 accum_reg <= '0;
             end else if (valid_in && ready_out) begin
-                accum_reg <= accum_reg + ACCUM_W'(signed'(a_in) * signed'(b_in));
+                accum_reg <= accum_reg +
+                    signed'({{(ACCUM_W - 2*DATA_W){product[2*DATA_W-1]}}, product});
             end
 
             if (!stall) begin
